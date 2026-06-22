@@ -6,7 +6,17 @@ import threading
 import time
 from datetime import datetime, timezone
 from functools import lru_cache
+from pathlib import Path
 from typing import Any
+
+# Load .env from backend/ or project root if not already set
+_env_file = Path(__file__).resolve().parents[2] / ".env"
+if _env_file.exists() and not os.getenv("SEC_USER_AGENT"):
+    for line in _env_file.read_text().splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, _, v = line.partition("=")
+            os.environ.setdefault(k.strip(), v.strip())
 
 import httpx
 from bs4 import BeautifulSoup
