@@ -29,16 +29,16 @@ export default function CitationEvalPanel({ reportId }: Props) {
   }
 
   return (
-    <section className="border border-[#163f34] bg-[#163f34] p-6 text-white sm:p-8">
+    <section className="border border-[#17243a] bg-[#17243a] p-6 text-white sm:p-8">
       <div className="grid gap-6 sm:grid-cols-[1fr_auto] sm:items-end">
         <div>
-          <p className="eyebrow text-[#d8f56a]">Independent check</p>
+          <p className="eyebrow text-[#e5c268]">Independent check</p>
           <h2 className="display mt-3 text-3xl">Do the citations support the report?</h2>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-white/70">
             Run the deterministic citation check to compare every quoted excerpt with the ingested filing chunks.
           </p>
         </div>
-        <button className="border border-[#d8f56a] bg-[#d8f56a] px-5 py-3 text-sm font-bold text-[#14251f] disabled:opacity-50" onClick={runEvaluation} disabled={loading}>
+        <button className="border border-[#e5c268] bg-[#e5c268] px-5 py-3 text-sm font-bold text-[#17243a] disabled:opacity-50" onClick={runEvaluation} disabled={loading}>
           {loading ? "Checking evidence" : data ? "Check again" : "Check the evidence"}
         </button>
       </div>
@@ -49,7 +49,7 @@ export default function CitationEvalPanel({ reportId }: Props) {
         <div className="mt-8 border-t border-white/15 pt-7">
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
-              <p className="metric-number text-5xl text-[#d8f56a]">{Math.round(data.precisionAtThreshold * 100)}%</p>
+              <p className="metric-number text-5xl text-[#e5c268]">{Math.round(data.precisionAtThreshold * 100)}%</p>
               <p className="mt-1 text-xs uppercase tracking-[0.14em] text-white/55">citation precision</p>
             </div>
             <div>
@@ -67,7 +67,7 @@ export default function CitationEvalPanel({ reportId }: Props) {
               <li className="border border-white/15 bg-white/[0.04] p-4" key={item.citationId}>
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <p className="text-sm font-bold">{index + 1}. {item.section}</p>
-                  <span className={`px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.12em] ${item.supported ? "bg-[#d8f56a] text-[#14251f]" : "bg-[#d99b35] text-[#14251f]"}`}>
+                  <span className={`px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.12em] ${item.supported ? "bg-[#e5c268] text-[#17243a]" : "bg-[#c97949] text-[#17243a]"}`}>
                     {item.supported ? "Supported" : "Review"} · {Math.round(item.supportScore * 100)}%
                   </span>
                 </div>

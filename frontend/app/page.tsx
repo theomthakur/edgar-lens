@@ -66,17 +66,17 @@ export default function HomePage() {
   return (
     <>
       <section className="border-b rule">
-        <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-[1.2fr_0.8fr] lg:px-8 lg:py-24">
+        <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-24">
           <div>
-            <p className="eyebrow text-[#41675b]">SEC research with a visible audit trail</p>
+            <p className="eyebrow text-[#355f9e]">Public-company research / SEC EDGAR</p>
             <h1 className="display mobile-hero-title mt-5 max-w-4xl text-[3.35rem] leading-[0.96] sm:text-[4.6rem] lg:text-[5.5rem]">
-              Read the filing.
+              Don’t just read
               <br />
-              <span className="italic text-[#41675b]">Show the evidence.</span>
+              <span className="italic text-[#a64b3c]">the conclusion.</span>
             </h1>
-            <p className="mt-7 max-w-2xl text-lg leading-8 text-[#56635e]">
-              EDGAR Lens turns public company filings into concise, citation-backed research. When the evidence is weak,
-              the agent changes its search strategy instead of presenting confidence it has not earned.
+            <p className="mt-7 max-w-2xl text-lg leading-8 text-[#657080]">
+              EDGAR Lens is a reading desk for public filings. It creates a concise brief, then leaves the source trail
+              visible so the conclusion can be challenged, checked, or trusted for the right reason.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a className="btn-primary mobile-action" href="#research">Run a filing analysis <span aria-hidden="true">→</span></a>
@@ -84,23 +84,23 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="card self-end p-6 sm:p-8">
-            <div className="flex items-center justify-between border-b rule pb-4">
-              <p className="eyebrow text-[#66716c]">A bounded agent, not a black box</p>
-              <span className="h-3 w-3 rounded-full bg-[#d8f56a] ring-4 ring-[#d8f56a]/25" />
+          <div className="archive-panel ledger-card self-end p-6 sm:p-8">
+            <div className="flex items-center justify-between gap-4 border-b rule pb-4">
+              <p className="eyebrow text-[#657080]">Research ledger / 01</p>
+              <span className="signal-tag">Visible reasoning</span>
             </div>
             <div className="mt-6 space-y-6">
               {[
-                ["01", "Draft", "Create a report from filing excerpts."],
-                ["02", "Verify", "Score the support behind every citation."],
-                ["03", "Adapt", "Broaden retrieval only when the evidence misses."],
-                ["04", "Stop", "Keep the best result after at most two rounds."],
+                ["A", "Locate", "Start with the actual filing, not a secondary summary."],
+                ["B", "Annotate", "Turn relevant excerpts into a reviewable brief."],
+                ["C", "Challenge", "Test whether each citation earns the claim beside it."],
+                ["D", "Conclude", "Widen the search only when the evidence asks for it."],
               ].map(([number, title, copy]) => (
                 <div className="grid grid-cols-[2rem_1fr] gap-4" key={number}>
-                  <span className="metric-number text-lg text-[#41675b]">{number}</span>
+                  <span className="metric-number text-lg text-[#a64b3c]">{number}</span>
                   <div>
                     <p className="font-bold">{title}</p>
-                    <p className="mt-1 text-sm leading-6 text-[#66716c]">{copy}</p>
+                    <p className="mt-1 text-sm leading-6 text-[#657080]">{copy}</p>
                   </div>
                 </div>
               ))}
@@ -112,27 +112,27 @@ export default function HomePage() {
       <section id="research" className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
         <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr]">
           <div>
-            <p className="eyebrow text-[#41675b]">Run the workflow</p>
-            <h2 className="display mt-4 text-4xl leading-tight sm:text-5xl">Choose a company. Follow every decision.</h2>
-            <p className="mt-5 max-w-lg leading-7 text-[#66716c]">
-              The filing comes directly from SEC EDGAR. The generated report is research support, not investment advice.
+            <p className="eyebrow text-[#355f9e]">Open a filing</p>
+            <h2 className="display mt-4 text-4xl leading-tight sm:text-5xl">Start a fresh research note.</h2>
+            <p className="mt-5 max-w-lg leading-7 text-[#657080]">
+              The source is fetched from SEC EDGAR. The resulting brief is research support, not investment advice.
             </p>
 
             <div className="mt-8 border-y rule py-5">
               <div className="grid grid-cols-3 gap-3 text-sm">
-                <div><p className="metric-number text-2xl">2</p><p className="mt-1 text-[#66716c]">maximum rounds</p></div>
-                <div><p className="metric-number text-2xl">100%</p><p className="mt-1 text-[#66716c]">citation visibility</p></div>
-                <div><p className="metric-number text-2xl">0</p><p className="mt-1 text-[#66716c]">trades or orders</p></div>
+                <div><p className="metric-number text-2xl">2</p><p className="mt-1 text-[#657080]">maximum rounds</p></div>
+                <div><p className="metric-number text-2xl">100%</p><p className="mt-1 text-[#657080]">citations shown</p></div>
+                <div><p className="metric-number text-2xl">0</p><p className="mt-1 text-[#657080]">trades or orders</p></div>
               </div>
             </div>
           </div>
 
-          <div className="card p-6 sm:p-8">
+          <div className="archive-panel p-6 sm:p-8">
             <form onSubmit={runResearch}>
               <div className="grid gap-5 sm:grid-cols-2">
                 <TickerSelect value={ticker} onChange={setTicker} label="Public company" />
                 <div className="space-y-2">
-                  <label className="block text-sm font-bold text-[#34453f]" htmlFor="filing-type">Filing type</label>
+                  <label className="block text-sm font-bold text-[#17243a]" htmlFor="filing-type">Filing type</label>
                   <select id="filing-type" className="field" value={filingType} onChange={(event) => setFilingType(event.target.value)}>
                     <option value="10-K">10-K · Annual report</option>
                     <option value="10-Q">10-Q · Quarterly report</option>
@@ -148,19 +148,19 @@ export default function HomePage() {
             </form>
 
             <div className="mt-8 border-t rule pt-7">
-              <p className="eyebrow text-[#66716c]">Live research trace</p>
+              <p className="eyebrow text-[#657080]">Live research trace</p>
               <ol className="mt-5 grid gap-3 sm:grid-cols-2">
                 {steps.map((step, index) => {
                   const current = phase === step.key || (step.key === "complete" && phase === "verifying");
                   const complete = phase === "complete" || (activeIndex > index && phase !== "error");
                   return (
-                    <li className="border rule bg-[#f8f5ee] p-4" key={step.key}>
+                    <li className="border rule bg-[#fbf8f2] p-4" key={step.key}>
                       <div className="flex items-center gap-3">
                         <span className={`status-dot ${complete ? "complete" : current ? "active" : ""}`} />
-                        <span className="text-xs font-bold uppercase tracking-[0.12em] text-[#66716c]">Step {index + 1}</span>
+                        <span className="text-xs font-bold uppercase tracking-[0.12em] text-[#657080]">Step {index + 1}</span>
                       </div>
                       <p className="mt-3 font-bold">{step.title}</p>
-                      <p className="mt-1 text-sm leading-5 text-[#66716c]">{step.copy}</p>
+                      <p className="mt-1 text-sm leading-5 text-[#657080]">{step.copy}</p>
                     </li>
                   );
                 })}
@@ -175,17 +175,17 @@ export default function HomePage() {
             ) : null}
 
             {phase === "complete" && job?.reportId ? (
-              <div className="mt-6 border border-[#163f34] bg-[#163f34] p-5 text-white">
+              <div className="mt-6 border border-[#17243a] bg-[#17243a] p-5 text-white">
                 <div className="grid gap-5 sm:grid-cols-[1fr_auto] sm:items-end">
                   <div>
-                    <p className="eyebrow text-[#d8f56a]">Research complete</p>
+                    <p className="eyebrow text-[#e5c268]">Research complete</p>
                     <h3 className="display mt-2 text-3xl">The evidence trail is ready.</h3>
                     <p className="mt-3 text-sm leading-6 text-white/70">
                       {job.rounds ?? 1} agent round{job.rounds === 1 ? "" : "s"}. {supported ? `${supported.count} of ${supported.total} citations met the support threshold.` : "Citations verified."}
                     </p>
                   </div>
                   <div className="text-left sm:text-right">
-                    <p className="metric-number text-4xl text-[#d8f56a]">{citationScore === null ? "N/A" : `${Math.round(citationScore * 100)}%`}</p>
+                    <p className="metric-number text-4xl text-[#e5c268]">{citationScore === null ? "N/A" : `${Math.round(citationScore * 100)}%`}</p>
                     <p className="text-xs uppercase tracking-[0.12em] text-white/55">citation precision</p>
                   </div>
                 </div>
@@ -200,7 +200,7 @@ export default function HomePage() {
                   </div>
                 ) : null}
 
-                <Link className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#d8f56a] underline underline-offset-4" href={`/report/${job.reportId}`}>
+                <Link className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#e5c268] underline underline-offset-4" href={`/report/${job.reportId}`}>
                   Open the cited report <span aria-hidden="true">→</span>
                 </Link>
               </div>
@@ -209,11 +209,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="how-it-works" className="border-t rule bg-[#163f34] text-white">
+      <section id="how-it-works" className="border-t rule bg-[#17243a] text-white">
         <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-2 lg:px-8 lg:py-24">
           <div>
-            <p className="eyebrow text-[#d8f56a]">Why this is agentic</p>
-            <h2 className="display mt-4 text-4xl leading-tight sm:text-5xl">The next step depends on the evidence.</h2>
+            <p className="eyebrow text-[#e5c268]">Why this is agentic</p>
+            <h2 className="display mt-4 text-4xl leading-tight sm:text-5xl">The next move depends on what the filing supports.</h2>
           </div>
           <div className="space-y-6 text-base leading-7 text-white/75">
             <p>
@@ -222,7 +222,7 @@ export default function HomePage() {
             <p>
               The flexible part is bounded. Citation scoring, the two-round limit, fallback behavior, and the final stop condition remain deterministic and inspectable.
             </p>
-            <div className="border-l-2 border-[#d8f56a] pl-5 text-white">
+            <div className="border-l-2 border-[#e5c268] pl-5 text-white">
               <p className="font-bold">Generate → verify → adapt → keep the best supported result.</p>
             </div>
           </div>

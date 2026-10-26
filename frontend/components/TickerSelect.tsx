@@ -79,7 +79,7 @@ export default function TickerSelect({ value, onChange, label = "Ticker" }: Prop
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-bold text-[#34453f]">{label}</label>
+      <label className="block text-sm font-bold text-[#17243a]">{label}</label>
       <select className="field" value={selectValue} onChange={handleSelect}>
         {sectors.map((sector) => (
           <optgroup key={sector} label={sector}>

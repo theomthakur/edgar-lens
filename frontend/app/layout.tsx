@@ -12,14 +12,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body>
-        <header className="sticky top-0 z-50 border-b rule bg-[#f4f1e9]/95 backdrop-blur-md">
+        <header className="sticky top-0 z-50 border-b rule bg-[#f7f3eb]/95 backdrop-blur-md">
           <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
             <Link href="/" className="flex items-center gap-3" aria-label="EDGAR Lens home">
               <span className="brand-mark">EL</span>
               <span>
                 <strong className="block text-[0.9rem] leading-tight tracking-[-0.02em]">EDGAR Lens</strong>
-                <span className="hidden text-[0.68rem] font-medium uppercase tracking-[0.15em] text-[#66716c] sm:block">
-                  Evidence before confidence
+                <span className="hidden text-[0.68rem] font-medium uppercase tracking-[0.15em] text-[#657080] sm:block">
+                  A public filing reading room
                 </span>
               </span>
             </Link>
@@ -37,10 +37,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
         <main>{children}</main>
 
-        <footer className="border-t rule bg-[#ede9df]">
-          <div className="mx-auto grid max-w-7xl gap-6 px-5 py-8 text-xs text-[#66716c] sm:grid-cols-2 lg:px-8">
+        <footer className="border-t rule bg-[#ece7dc]">
+          <div className="mx-auto grid max-w-7xl gap-6 px-5 py-8 text-xs text-[#657080] sm:grid-cols-2 lg:px-8">
             <div>
-              <p className="font-bold text-[#14251f]">EDGAR Lens</p>
+              <p className="font-bold text-[#17243a]">EDGAR Lens</p>
               <p className="mt-1 max-w-md">A bounded research agent for public SEC filings.</p>
             </div>
             <div className="sm:text-right">
