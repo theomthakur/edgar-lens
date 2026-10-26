@@ -17,14 +17,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body>
-        <header className="sticky top-0 z-50 border-b rule bg-white/95 backdrop-blur-md">
+        <header className="sticky top-0 z-50 border-b rule bg-[#f7f3eb]/95 backdrop-blur-md">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 lg:px-8">
             <Link href="/" className="flex items-center gap-3" aria-label="EDGAR Lens home">
               <img className="brand-mark" src="/edgar-lens-mark.svg" alt="" aria-hidden="true" />
               <span>
                 <strong className="block text-[0.9rem] leading-tight tracking-[-0.02em]">EDGAR Lens</strong>
-                <span className="hidden text-xs font-medium text-[#64748b] sm:block">
-                  SEC filing research
+                <span className="hidden text-[0.68rem] font-medium uppercase tracking-[0.15em] text-[#657080] sm:block">
+                  A public filing reading room
                 </span>
               </span>
             </Link>
@@ -42,12 +42,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
         <main>{children}</main>
 
-        <footer className="border-t rule bg-white">
-          <div className="mx-auto grid max-w-6xl gap-6 px-5 py-8 text-xs text-[#64748b] sm:grid-cols-2 lg:px-8">
+        <footer className="border-t rule bg-[#ece7dc]">
+          <div className="mx-auto grid max-w-6xl gap-6 px-5 py-8 text-xs text-[#657080] sm:grid-cols-2 lg:px-8">
             <div>
               <div className="flex items-center gap-2">
                 <img className="h-5 w-5" src="/edgar-lens-mark.svg" alt="" aria-hidden="true" />
-                <p className="font-bold text-[#172033]">EDGAR Lens</p>
+                <p className="font-bold text-[#17243a]">EDGAR Lens</p>
               </div>
               <p className="mt-1 max-w-md">A bounded research agent for public SEC filings.</p>
             </div>

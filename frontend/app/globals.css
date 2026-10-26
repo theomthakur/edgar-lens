@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --paper: #f8fafc;
-  --surface: #ffffff;
-  --ink: #172033;
-  --muted: #64748b;
-  --line: #e2e8f0;
-  --navy: #172033;
-  --blue: #2563eb;
-  --gold: #d49b25;
-  --red: #c2413a;
+  --paper: #f7f3eb;
+  --surface: #fffdfa;
+  --ink: #17243a;
+  --muted: #657080;
+  --line: #d6d0c4;
+  --navy: #17243a;
+  --blue: #355f9e;
+  --gold: #c79d43;
+  --red: #a64b3c;
 }
 
 * { box-sizing: border-box; }
@@ -21,23 +21,24 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   color: var(--ink);
-  background: var(--paper);
+  background:
+    radial-gradient(circle at 1px 1px, rgb(23 36 58 / 0.075) 1px, transparent 0) 0 0 / 18px 18px,
+    var(--paper);
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 ::selection { color: white; background: var(--blue); }
 
 .display {
-  font-family: inherit;
-  font-weight: 700;
-  letter-spacing: -0.04em;
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: -0.035em;
 }
 
 .brand-mark {
   width: 2.5rem;
   height: 2.5rem;
   flex: none;
-  filter: none;
+  filter: drop-shadow(0 2px 2px rgb(23 36 58 / 0.13));
 }
 
 .nav-link {
@@ -50,42 +51,47 @@ body {
 
 .card, .archive-panel {
   border: 1px solid var(--line);
-  border-radius: 0.75rem;
-  background: var(--surface);
-  box-shadow: 0 1px 2px rgb(15 23 42 / 0.03);
+  background: rgb(255 253 250 / 0.94);
+  box-shadow: 8px 8px 0 rgb(23 36 58 / 0.045);
 }
 
-.archive-panel { border-top: 1px solid var(--line); }
-.ledger-card { border-left: 1px solid var(--line); }
+.archive-panel { border-top: 3px solid var(--navy); }
+.ledger-card { border-left: 3px solid var(--red); }
 .signal-tag {
   display: inline-flex;
   align-items: center;
-  border: 1px solid #bfdbfe;
-  border-radius: 999px;
-  background: #eff6ff;
+  border: 1px solid rgb(53 95 158 / 0.42);
+  background: rgb(53 95 158 / 0.08);
   padding: 0.35rem 0.55rem;
-  color: #1d4ed8;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0;
-  text-transform: none;
+  color: var(--blue);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.margin-note {
+  color: var(--red);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.93rem;
+  font-style: italic;
 }
 
 .field {
   width: 100%;
   border: 1px solid var(--line);
-  border-radius: 0.5rem;
+  border-radius: 0;
   background: var(--surface);
   padding: 0.85rem 0.95rem;
   color: var(--ink);
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   outline: none;
   transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
 .field:focus {
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgb(37 99 235 / 0.12);
+  box-shadow: 0 0 0 3px rgb(53 95 158 / 0.13);
 }
 
 .btn-primary {
@@ -94,10 +100,9 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.65rem;
-  border: 1px solid var(--blue);
-  border-radius: 0.5rem;
-  background: var(--blue);
-  padding: 0.7rem 1rem;
+  border: 1px solid var(--navy);
+  background: var(--navy);
+  padding: 0.75rem 1.15rem;
   color: white;
   font-size: 0.875rem;
   font-weight: 700;
@@ -105,7 +110,8 @@ body {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #1d4ed8;
+  background: var(--blue);
+  transform: translateY(-1px);
 }
 
 .btn-primary:disabled { cursor: not-allowed; opacity: 0.55; }
@@ -116,7 +122,6 @@ body {
   align-items: center;
   justify-content: center;
   border: 1px solid var(--ink);
-  border-radius: 0.5rem;
   background: transparent;
   padding: 0.75rem 1.15rem;
   color: var(--ink);
@@ -128,17 +133,16 @@ body {
 .btn-secondary:hover { background: var(--surface); }
 
 .eyebrow {
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  text-transform: none;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .rule { border-color: var(--line); }
 
 .metric-number {
-  font-family: inherit;
-  font-weight: 650;
+  font-family: Georgia, "Times New Roman", serif;
   font-variant-numeric: tabular-nums;
 }
 
@@ -150,8 +154,8 @@ body {
 }
 
 .status-dot.active {
-  background: var(--blue);
-  box-shadow: 0 0 0 4px rgb(37 99 235 / 0.12);
+  background: var(--gold);
+  box-shadow: 0 0 0 4px rgb(199 157 67 / 0.17);
 }
 
 .status-dot.complete { background: var(--blue); }
