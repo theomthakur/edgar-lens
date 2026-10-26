@@ -16,7 +16,7 @@ export default async function ReportPage({ params }: Props) {
   const report = await getReport(id);
 
   return (
-    <article className="mx-auto max-w-6xl px-5 py-12 lg:px-8 lg:py-16">
+    <article className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-20">
       <Link className="text-sm font-bold text-[#355f9e] underline underline-offset-4" href="/#research">
         ← Run another analysis
       </Link>
@@ -24,7 +24,7 @@ export default async function ReportPage({ params }: Props) {
       <header className="mt-8 grid gap-8 border-y rule py-10 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
           <p className="eyebrow text-[#355f9e]">Citation-backed filing research</p>
-          <h1 className="display mt-3 text-5xl sm:text-5xl">{report.ticker} research brief</h1>
+          <h1 className="display mt-3 text-5xl sm:text-6xl">{report.ticker} research brief</h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-[#657080]">{report.summary}</p>
         </div>
         <div className="grid gap-4 border-l rule pl-6">

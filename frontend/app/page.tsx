@@ -66,10 +66,10 @@ export default function HomePage() {
   return (
     <>
       <section className="border-b rule">
-        <div className="mx-auto grid max-w-6xl gap-12 px-5 py-16 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-20">
+        <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-24">
           <div>
             <p className="eyebrow text-[#355f9e]">Public-company research / SEC EDGAR</p>
-            <h1 className="display mobile-hero-title mt-5 max-w-3xl text-[3.25rem] leading-[0.98] sm:text-[4.35rem] lg:text-[5rem]">
+            <h1 className="display mobile-hero-title mt-5 max-w-4xl text-[3.35rem] leading-[0.96] sm:text-[4.6rem] lg:text-[5.5rem]">
               Don’t just read
               <br />
               <span className="italic text-[#a64b3c]">the conclusion.</span>
@@ -84,7 +84,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="archive-panel ledger-card lg:self-center p-6 sm:p-8">
+          <div className="archive-panel ledger-card self-end p-6 sm:p-8">
             <div className="flex items-center justify-between gap-4 border-b rule pb-4">
               <p className="eyebrow text-[#657080]">Research ledger / 01</p>
               <span className="signal-tag">Visible reasoning</span>
@@ -109,8 +109,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="research" className="mx-auto max-w-6xl px-5 py-16 lg:px-8 lg:py-20">
-        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+      <section id="research" className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
+        <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr]">
           <div>
             <p className="eyebrow text-[#355f9e]">Open a filing</p>
             <h2 className="display mt-4 text-4xl leading-tight sm:text-5xl">Start a fresh research note.</h2>

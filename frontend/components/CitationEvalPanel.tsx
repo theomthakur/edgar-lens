@@ -10,6 +10,7 @@ function qualityLabel(score: number) {
   if (score >= 0.5) return "Needs review";
   return "Weak support";
 }
+
 export default function CitationEvalPanel({ reportId }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

@@ -18,7 +18,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body>
         <header className="sticky top-0 z-50 border-b rule bg-[#f7f3eb]/95 backdrop-blur-md">
-          <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 lg:px-8">
+          <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
             <Link href="/" className="flex items-center gap-3" aria-label="EDGAR Lens home">
               <img className="brand-mark" src="/edgar-lens-mark.svg" alt="" aria-hidden="true" />
               <span>
@@ -43,7 +43,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <main>{children}</main>
 
         <footer className="border-t rule bg-[#ece7dc]">
-          <div className="mx-auto grid max-w-6xl gap-6 px-5 py-8 text-xs text-[#657080] sm:grid-cols-2 lg:px-8">
+          <div className="mx-auto grid max-w-7xl gap-6 px-5 py-8 text-xs text-[#657080] sm:grid-cols-2 lg:px-8">
             <div>
               <div className="flex items-center gap-2">
                 <img className="h-5 w-5" src="/edgar-lens-mark.svg" alt="" aria-hidden="true" />
