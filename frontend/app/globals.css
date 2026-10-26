@@ -35,17 +35,10 @@ body {
 }
 
 .brand-mark {
-  display: grid;
   width: 2.5rem;
   height: 2.5rem;
-  place-items: center;
-  border: 2px solid var(--navy);
-  border-radius: 999px;
-  background: var(--paper);
-  color: var(--navy);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.1rem;
-  font-weight: 700;
+  flex: none;
+  filter: drop-shadow(0 2px 2px rgb(23 36 58 / 0.13));
 }
 
 .nav-link {
