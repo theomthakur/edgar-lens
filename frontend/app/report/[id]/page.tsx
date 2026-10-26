@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getReport } from "@/lib/api";
+import { getReport, getReportPdfUrl } from "@/lib/api";
 import CitationEvalPanel from "@/components/CitationEvalPanel";
 import { BRAND_NAME } from "@/lib/brand";
 
@@ -27,9 +27,14 @@ export default async function ReportPage({ params }: Props) {
           <h1 className="display mt-3 text-5xl sm:text-6xl">{report.ticker} research brief</h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-[#657080]">{report.summary}</p>
         </div>
-        <div className="border-l rule pl-6">
-          <p className="eyebrow text-[#657080]">Report reference</p>
-          <p className="mt-2 max-w-[16rem] break-all font-mono text-xs text-[#17243a]">{report.reportId}</p>
+        <div className="grid gap-4 border-l rule pl-6">
+          <div>
+            <p className="eyebrow text-[#657080]">Report reference</p>
+            <p className="mt-2 max-w-[16rem] break-all font-mono text-xs text-[#17243a]">{report.reportId}</p>
+          </div>
+          <a className="inline-flex w-fit items-center gap-2 border border-[#17243a] bg-[#fffdfa] px-4 py-3 text-sm font-bold text-[#17243a] transition hover:bg-[#17243a] hover:text-white" href={getReportPdfUrl(report.reportId)}>
+            Download PDF <span aria-hidden="true">↓</span>
+          </a>
         </div>
       </header>
 
