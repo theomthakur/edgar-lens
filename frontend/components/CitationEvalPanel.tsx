@@ -29,45 +29,45 @@ export default function CitationEvalPanel({ reportId }: Props) {
   }
 
   return (
-    <section className="border border-[#17243a] bg-[#17243a] p-6 text-white sm:p-8">
+    <section className="rounded-xl border border-[#172033] bg-[#172033] p-6 text-white sm:p-7">
       <div className="grid gap-6 sm:grid-cols-[1fr_auto] sm:items-end">
         <div>
-          <p className="eyebrow text-[#e5c268]">Independent check</p>
-          <h2 className="display mt-3 text-3xl">Do the citations support the report?</h2>
+          <p className="text-sm font-medium text-blue-200">Independent check</p>
+          <h2 className="display mt-2 text-2xl">Do the citations support the report?</h2>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-white/70">
             Run the deterministic citation check to compare every quoted excerpt with the ingested filing chunks.
           </p>
         </div>
-        <button className="border border-[#e5c268] bg-[#e5c268] px-5 py-3 text-sm font-bold text-[#17243a] disabled:opacity-50" onClick={runEvaluation} disabled={loading}>
+        <button className="rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-[#172033] transition hover:bg-blue-50 disabled:opacity-50" onClick={runEvaluation} disabled={loading}>
           {loading ? "Checking evidence" : data ? "Check again" : "Check the evidence"}
         </button>
       </div>
 
-      {error ? <p className="mt-5 border border-[#b65d55] bg-[#b65d55]/20 p-4 text-sm">{error}</p> : null}
+      {error ? <p className="mt-5 rounded-lg border border-red-300 bg-red-500/20 p-4 text-sm">{error}</p> : null}
 
       {data ? (
         <div className="mt-8 border-t border-white/15 pt-7">
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
-              <p className="metric-number text-5xl text-[#e5c268]">{Math.round(data.precisionAtThreshold * 100)}%</p>
-              <p className="mt-1 text-xs uppercase tracking-[0.14em] text-white/55">citation precision</p>
+              <p className="metric-number text-4xl text-white">{Math.round(data.precisionAtThreshold * 100)}%</p>
+              <p className="mt-1 text-xs text-white/55">citation precision</p>
             </div>
             <div>
               <p className="metric-number text-5xl">{data.supportedCitations}/{data.totalCitations}</p>
-              <p className="mt-1 text-xs uppercase tracking-[0.14em] text-white/55">citations supported</p>
+              <p className="mt-1 text-xs text-white/55">citations supported</p>
             </div>
             <div>
               <p className="metric-number text-2xl">{qualityLabel(data.precisionAtThreshold)}</p>
-              <p className="mt-1 text-xs uppercase tracking-[0.14em] text-white/55">release signal</p>
+              <p className="mt-1 text-xs text-white/55">release signal</p>
             </div>
           </div>
 
           <ol className="mt-8 space-y-3">
             {data.results.map((item, index) => (
-              <li className="border border-white/15 bg-white/[0.04] p-4" key={item.citationId}>
+              <li className="rounded-lg border border-white/15 bg-white/[0.04] p-4" key={item.citationId}>
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <p className="text-sm font-bold">{index + 1}. {item.section}</p>
-                  <span className={`px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.12em] ${item.supported ? "bg-[#e5c268] text-[#17243a]" : "bg-[#c97949] text-[#17243a]"}`}>
+                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${item.supported ? "bg-blue-200 text-[#172033]" : "bg-amber-200 text-[#172033]"}`}>
                     {item.supported ? "Supported" : "Review"} · {Math.round(item.supportScore * 100)}%
                   </span>
                 </div>
