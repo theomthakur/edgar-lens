@@ -1,26 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { CitationEvalResponse, evaluateReportCitations } from "@/lib/api";
+import { type CitationEvalResponse, evaluateReportCitations } from "@/lib/api";
 
-type Props = {
-  reportId: string;
-};
+type Props = { reportId: string };
 
-function qualityLabel(score: number): "Strong" | "Moderate" | "Weak" {
-  if (score >= 0.8) return "Strong";
-  if (score >= 0.5) return "Moderate";
-  return "Weak";
-}
-
-function qualityPillClass(score: number): string {
-  if (score >= 0.8) return "bg-emerald-100 text-emerald-700";
-  if (score >= 0.5) return "bg-amber-100 text-amber-700";
-  return "bg-rose-100 text-rose-700";
+function qualityLabel(score: number) {
+  if (score >= 0.8) return "Strong support";
+  if (score >= 0.5) return "Needs review";
+  return "Weak support";
 }
 
 export default function CitationEvalPanel({ reportId }: Props) {
-  const [threshold, setThreshold] = useState(0.35);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [data, setData] = useState<CitationEvalResponse | null>(null);
@@ -29,94 +20,61 @@ export default function CitationEvalPanel({ reportId }: Props) {
     setLoading(true);
     setError("");
     try {
-      const result = await evaluateReportCitations(reportId, threshold);
-      setData(result);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to evaluate citations.");
+      setData(await evaluateReportCitations(reportId, 0.2));
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Citation evaluation failed.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <section className="card p-6 space-y-4">
-      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+    <section className="border border-[#163f34] bg-[#163f34] p-6 text-white sm:p-8">
+      <div className="grid gap-6 sm:grid-cols-[1fr_auto] sm:items-end">
         <div>
-          <h2 className="text-lg font-medium">Citation Quality</h2>
-          <p className="text-sm text-slate-600">
-            Evaluate whether report citations are supported by ingested filing chunks.
+          <p className="eyebrow text-[#d8f56a]">Independent check</p>
+          <h2 className="display mt-3 text-3xl">Do the citations support the report?</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-white/70">
+            Run the deterministic citation check to compare every quoted excerpt with the ingested filing chunks.
           </p>
         </div>
-
-        <div className="flex items-end gap-2">
-          <label className="text-sm">
-            Threshold
-            <input
-              className="field mt-1 w-24"
-              type="number"
-              min={0}
-              max={1}
-              step={0.05}
-              value={threshold}
-              onChange={(e) => setThreshold(Number(e.target.value))}
-            />
-          </label>
-          <button className="btn-primary" onClick={runEvaluation} disabled={loading}>
-            {loading ? "Evaluating..." : "Run Eval"}
-          </button>
-        </div>
+        <button className="border border-[#d8f56a] bg-[#d8f56a] px-5 py-3 text-sm font-bold text-[#14251f] disabled:opacity-50" onClick={runEvaluation} disabled={loading}>
+          {loading ? "Checking evidence" : data ? "Check again" : "Check the evidence"}
+        </button>
       </div>
 
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      {error ? <p className="mt-5 border border-[#b65d55] bg-[#b65d55]/20 p-4 text-sm">{error}</p> : null}
 
       {data ? (
-        <div className="space-y-4">
-          <div className="grid gap-3 md:grid-cols-4">
-            <div className="rounded border p-3">
-              <p className="text-xs text-slate-500">Precision @ threshold</p>
-              <p className="text-xl font-semibold">{data.precisionAtThreshold}</p>
-              <span
-                className={`mt-2 inline-block rounded px-2 py-1 text-xs font-medium ${qualityPillClass(
-                  data.precisionAtThreshold
-                )}`}
-              >
-                {qualityLabel(data.precisionAtThreshold)} quality
-              </span>
+        <div className="mt-8 border-t border-white/15 pt-7">
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div>
+              <p className="metric-number text-5xl text-[#d8f56a]">{Math.round(data.precisionAtThreshold * 100)}%</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.14em] text-white/55">citation precision</p>
             </div>
-            <div className="rounded border p-3">
-              <p className="text-xs text-slate-500">Supported</p>
-              <p className="text-xl font-semibold">{data.supportedCitations}</p>
+            <div>
+              <p className="metric-number text-5xl">{data.supportedCitations}/{data.totalCitations}</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.14em] text-white/55">citations supported</p>
             </div>
-            <div className="rounded border p-3">
-              <p className="text-xs text-slate-500">Total citations</p>
-              <p className="text-xl font-semibold">{data.totalCitations}</p>
-            </div>
-            <div className="rounded border p-3">
-              <p className="text-xs text-slate-500">Filing</p>
-              <p className="text-sm font-medium">{data.filingId}</p>
+            <div>
+              <p className="metric-number text-2xl">{qualityLabel(data.precisionAtThreshold)}</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.14em] text-white/55">release signal</p>
             </div>
           </div>
 
-          <ul className="space-y-3">
-            {data.results.map((item) => (
-              <li key={item.citationId} className="rounded border p-3">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm font-medium">{item.section}</p>
-                  <span
-                    className={`rounded px-2 py-1 text-xs ${
-                      item.supported
-                        ? "bg-emerald-100 text-emerald-700"
-                        : "bg-amber-100 text-amber-700"
-                    }`}
-                  >
-                    {item.supported ? "Supported" : "Weak support"}
+          <ol className="mt-8 space-y-3">
+            {data.results.map((item, index) => (
+              <li className="border border-white/15 bg-white/[0.04] p-4" key={item.citationId}>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <p className="text-sm font-bold">{index + 1}. {item.section}</p>
+                  <span className={`px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.12em] ${item.supported ? "bg-[#d8f56a] text-[#14251f]" : "bg-[#d99b35] text-[#14251f]"}`}>
+                    {item.supported ? "Supported" : "Review"} · {Math.round(item.supportScore * 100)}%
                   </span>
                 </div>
-                <p className="mt-1 text-xs text-slate-500">Score: {item.supportScore}</p>
-                <p className="mt-2 text-sm text-slate-700">Best match: {item.bestMatchExcerpt}</p>
+                <p className="mt-3 text-sm leading-6 text-white/70">Best source match: {item.bestMatchExcerpt}</p>
               </li>
             ))}
-          </ul>
+          </ol>
         </div>
       ) : null}
     </section>

@@ -9,6 +9,11 @@ from sqlalchemy.orm import Session, declarative_base, sessionmaker
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./finance_agent.db")
 
+# Managed Postgres providers commonly return a plain ``postgresql://`` URL.
+# This project ships psycopg 3, so select that SQLAlchemy driver explicitly.
+if DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
+
 engine = create_engine(
     DATABASE_URL,
     connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {},
