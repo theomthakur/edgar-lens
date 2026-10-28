@@ -108,6 +108,17 @@ What gets traced:
 
 The citation check doesn't change between modes, so both are graded by the same deterministic rule. If the optional packages are missing, the app falls back to lexical and reports `retrievalMode` in the response.
 
+**Result (27 Oct 2026):** keyword retrieval stays the default because it did better. Both modes drafted with a local `qwen2.5:7b` model and were graded by the same citation check, on the latest 10-K for 8 companies. Further companies weren't run because the local machine ran out of memory.
+
+| | Keyword (default) | Hybrid (LangChain) |
+|---|---|---|
+| Mean first-round citation precision | **0.875** | 0.749 |
+| Mean final citation precision | **0.959** | 0.875 |
+| Passed in the first round | **6 of 8** | 4 of 8 |
+| Median seconds per report | **28.5** | 83.7 |
+
+Hybrid was better only for GOOGL and worse for NVDA, TSLA, AMZN and META. 10-K sections use very consistent vocabulary ("risk factors", "cash flows from operating activities"), so exact-term matching is hard to beat, while embedding search sometimes pulled thematically similar passages that the draft then cited less precisely. It's a small sample with a small local model, so treat it as a direction, not a final verdict. Raw results: `backend/eval/results/retrieval-comparison-2026-10-27.json`.
+
 Compare the two modes on real 10-K filings:
 
 ```bash

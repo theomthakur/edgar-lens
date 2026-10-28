@@ -1,0 +1,234 @@
+{
+  "meta": {
+    "llm_model": "qwen2.5:7b (Ollama, local)",
+    "embedding_model": "BAAI/bge-small-en-v1.5",
+    "bm25_weight": 0.5,
+    "note": "8 complete pairs; runs on further companies were stopped by macOS out-of-memory kills"
+  },
+  "pairs": {
+    "AAPL": {
+      "lexical": {
+        "requested_mode": "lexical",
+        "ticker": "AAPL",
+        "filing_date": null,
+        "chunks": null,
+        "mode": "lexical",
+        "round1_precision": 1.0,
+        "final_precision": 1.0,
+        "rounds": 1,
+        "llm_used": true,
+        "llm_errors": null,
+        "seconds": 29.92
+      },
+      "hybrid_langchain": {
+        "requested_mode": "hybrid_langchain",
+        "ticker": "AAPL",
+        "filing_date": null,
+        "chunks": null,
+        "mode": "hybrid_langchain",
+        "round1_precision": 1.0,
+        "final_precision": 1.0,
+        "rounds": 1,
+        "llm_used": true,
+        "llm_errors": null,
+        "seconds": 41.19
+      }
+    },
+    "MSFT": {
+      "lexical": {
+        "requested_mode": "lexical",
+        "ticker": "MSFT",
+        "filing_date": null,
+        "chunks": null,
+        "mode": "lexical",
+        "round1_precision": 1.0,
+        "final_precision": 1.0,
+        "rounds": 1,
+        "llm_used": true,
+        "llm_errors": null,
+        "seconds": 25.69
+      },
+      "hybrid_langchain": {
+        "requested_mode": "hybrid_langchain",
+        "ticker": "MSFT",
+        "filing_date": null,
+        "chunks": null,
+        "mode": "hybrid_langchain",
+        "round1_precision": 1.0,
+        "final_precision": 1.0,
+        "rounds": 1,
+        "llm_used": true,
+        "llm_errors": null,
+        "seconds": 61.55
+      }
+    },
+    "NVDA": {
+      "lexical": {
+        "requested_mode": "lexical",
+        "ticker": "NVDA",
+        "filing_date": null,
+        "chunks": null,
+        "mode": "lexical",
+        "round1_precision": 1.0,
+        "final_precision": 1.0,
+        "rounds": 1,
+        "llm_used": true,
+        "llm_errors": null,
+        "seconds": 28.31
+      },
+      "hybrid_langchain": {
+        "requested_mode": "hybrid_langchain",
+        "ticker": "NVDA",
+        "filing_date": null,
+        "chunks": null,
+        "mode": "hybrid_langchain",
+        "round1_precision": 0.33,
+        "final_precision": 0.33,
+        "rounds": 2,
+        "llm_used": true,
+        "llm_errors": null,
+        "seconds": 90.75
+      }
+    },
+    "AMZN": {
+      "lexical": {
+        "requested_mode": "lexical",
+        "ticker": "AMZN",
+        "filing_date": null,
+        "chunks": null,
+        "mode": "lexical",
+        "round1_precision": 0.67,
+        "final_precision": 1.0,
+        "rounds": 2,
+        "llm_used": true,
+        "llm_errors": null,
+        "seconds": 60.81
+      },
+      "hybrid_langchain": {
+        "requested_mode": "hybrid_langchain",
+        "ticker": "AMZN",
+        "filing_date": null,
+        "chunks": null,
+        "mode": "hybrid_langchain",
+        "round1_precision": 0.33,
+        "final_precision": 1.0,
+        "rounds": 2,
+        "llm_used": true,
+        "llm_errors": null,
+        "seconds": 82.62
+      }
+    },
+    "GOOGL": {
+      "lexical": {
+        "requested_mode": "lexical",
+        "ticker": "GOOGL",
+        "filing_date": null,
+        "chunks": null,
+        "mode": "lexical",
+        "round1_precision": 0.33,
+        "final_precision": 0.67,
+        "rounds": 2,
+        "llm_used": true,
+        "llm_errors": null,
+        "seconds": 53.78
+      },
+      "hybrid_langchain": {
+        "requested_mode": "hybrid_langchain",
+        "ticker": "GOOGL",
+        "filing_date": "2026-02-05",
+        "chunks": 370,
+        "mode": "hybrid_langchain",
+        "round1_precision": 1.0,
+        "final_precision": 1.0,
+        "rounds": 1,
+        "llm_used": true,
+        "llm_errors": 0,
+        "seconds": 64.18
+      }
+    },
+    "META": {
+      "lexical": {
+        "requested_mode": "lexical",
+        "ticker": "META",
+        "filing_date": "2026-01-29",
+        "chunks": 513,
+        "mode": "lexical",
+        "round1_precision": 1.0,
+        "final_precision": 1.0,
+        "rounds": 1,
+        "llm_used": true,
+        "llm_errors": 0,
+        "seconds": 28.75
+      },
+      "hybrid_langchain": {
+        "requested_mode": "hybrid_langchain",
+        "ticker": "META",
+        "filing_date": "2026-01-29",
+        "chunks": 513,
+        "mode": "hybrid_langchain",
+        "round1_precision": 0.6667,
+        "final_precision": 1.0,
+        "rounds": 2,
+        "llm_used": true,
+        "llm_errors": 0,
+        "seconds": 95.46
+      }
+    },
+    "TSLA": {
+      "lexical": {
+        "requested_mode": "lexical",
+        "ticker": "TSLA",
+        "filing_date": "2026-01-29",
+        "chunks": 413,
+        "mode": "lexical",
+        "round1_precision": 1.0,
+        "final_precision": 1.0,
+        "rounds": 1,
+        "llm_used": true,
+        "llm_errors": 0,
+        "seconds": 24.25
+      },
+      "hybrid_langchain": {
+        "requested_mode": "hybrid_langchain",
+        "ticker": "TSLA",
+        "filing_date": "2026-01-29",
+        "chunks": 413,
+        "mode": "hybrid_langchain",
+        "round1_precision": 0.6667,
+        "final_precision": 0.6667,
+        "rounds": 2,
+        "llm_used": true,
+        "llm_errors": 0,
+        "seconds": 84.8
+      }
+    },
+    "JPM": {
+      "lexical": {
+        "requested_mode": "lexical",
+        "ticker": "JPM",
+        "filing_date": "2026-02-13",
+        "chunks": 1364,
+        "mode": "lexical",
+        "round1_precision": 1.0,
+        "final_precision": 1.0,
+        "rounds": 1,
+        "llm_used": true,
+        "llm_errors": 0,
+        "seconds": 25.89
+      },
+      "hybrid_langchain": {
+        "requested_mode": "hybrid_langchain",
+        "ticker": "JPM",
+        "filing_date": "2026-02-13",
+        "chunks": 1364,
+        "mode": "hybrid_langchain",
+        "round1_precision": 1.0,
+        "final_precision": 1.0,
+        "rounds": 1,
+        "llm_used": true,
+        "llm_errors": 0,
+        "seconds": 114.12
+      }
+    }
+  }
+}

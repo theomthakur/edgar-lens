@@ -40,24 +40,37 @@ def main() -> None:
     args = parser.parse_args()
     tickers = [t.strip().upper() for t in args.tickers.split(",") if t.strip()]
 
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+    progress = out / "retrieval-comparison-progress.jsonl"
     rows: list[dict] = []
+    if progress.exists():
+        rows = [json.loads(line) for line in progress.read_text().splitlines() if line.strip()]
+    done = {(r["ticker"], r["requested_mode"]) for r in rows if "requested_mode" in r}
     for ticker in tickers:
+        if all((ticker, mode) in done for mode in MODES):
+            continue
         try:
             filing, chunks = _load_chunks(ticker)
         except Exception as error:  # noqa: BLE001
             print(f"{ticker:<6} skipped: {error}", flush=True)
             continue
         for mode in MODES:
+            if (ticker, mode) in done:
+                continue
             os.environ["RETRIEVAL_MODE"] = mode
             started = time.monotonic()
             result = run_analysis_agent_loop(ticker, chunks)
             seconds = round(time.monotonic() - started, 2)
             row = {
+                "requested_mode": mode,
                 "ticker": ticker, "filing_date": filing["filing_date"], "chunks": len(chunks), "mode": result["retrievalMode"],
                 "round1_precision": result["trace"][0]["precision"], "final_precision": result["finalPrecision"],
                 "rounds": result["rounds"], "llm_used": result["llmUsed"], "llm_errors": len(result["llmErrors"]), "seconds": seconds,
             }
             rows.append(row)
+            with progress.open("a") as handle:
+                handle.write(json.dumps(row) + "\n")
             print(f"{ticker:<6} {row['mode']:<17} r1={row['round1_precision']:.2f} final={row['final_precision']:.2f} "
                   f"rounds={row['rounds']} llm={row['llm_used']} {seconds}s", flush=True)
 
@@ -74,8 +87,6 @@ def main() -> None:
             "median_seconds": statistics.median(r["seconds"] for r in mine),
         }
 
-    out = Path(args.out)
-    out.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now().strftime("%Y%m%d-%H%M")
     meta = {"llm_model": os.getenv("LLM_MODEL"), "embedding_model": os.getenv("RETRIEVAL_EMBEDDING_MODEL", "BAAI/bge-small-en-v1.5"),
             "bm25_weight": os.getenv("RETRIEVAL_BM25_WEIGHT", "0.5")}
