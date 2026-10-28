@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Callable
 
-from app.observability import current_trace_id, observe
+from app.observability import trace_attributes, current_trace_id, observe
 
 from .evidence import Evidence
 from .llm import ChatModel
@@ -63,6 +63,12 @@ def _short(value: object, limit: int = 700) -> str:
     return text if len(text) <= limit else text[:limit] + f"... ({len(text) - limit} more characters)"
 
 
+def _trimmed(message: dict, limit: int = 4000) -> dict:
+    """A message as the model saw it, with very long text cut so one trace stays readable."""
+    content = message.get("content")
+    return {**message, "content": _short(content, limit)} if isinstance(content, str) else message
+
+
 def run_agent(
     question: str,
     model: ChatModel,
@@ -71,7 +77,9 @@ def run_agent(
     on_event: Callable[[dict], None] | None = None,
 ) -> RunResult:
     """Run one question. With Langfuse configured, the whole run is one trace (see app/observability.py)."""
-    with observe("research-agent", as_type="agent", input={"question": question}, metadata={"model": model.name}) as run:
+    with observe("research-agent", as_type="agent", input=question, metadata={"model": model.name}) as run, trace_attributes(
+        trace_name="research-agent", tags=["research-agent"], metadata={"model": model.name}
+    ):
         result = _run_agent(question, model, sec, budget, on_event)
         run.update(output={
             "status": result.status, "answer": _short(result.answer, 500),
@@ -119,10 +127,15 @@ def _run_agent(
         if time.monotonic() - started > budget.max_seconds or result.cost_usd >= budget.max_cost_usd:
             return finish("stopped_budget")
         try:
-            with observe("model-call", as_type="generation", model=model.name, input={"messages": len(messages)}) as generation:
+            with observe("model-call", as_type="generation", model=model.name, input=[_trimmed(m) for m in messages]) as generation:
                 reply = model.chat(messages, TOOL_SPECS)
+                assistant_message = {
+                    "role": "assistant",
+                    "content": reply.content or None,
+                    "tool_calls": [{"id": c["id"], "type": "function", "function": {"name": c["name"], "arguments": json.dumps(c["arguments"])}} for c in reply.tool_calls] or None,
+                }
                 generation.update(
-                    output={"content": _short(reply.content, 400), "tool_calls": [c["name"] for c in reply.tool_calls]},
+                    output=assistant_message,
                     usage_details={"input": reply.prompt_tokens, "output": reply.completion_tokens},
                     cost_details={"total": reply.cost_usd},
                 )
@@ -135,11 +148,7 @@ def _run_agent(
         result.cost_usd += reply.cost_usd
         emit({"kind": "model", "thinking": _short(reply.content, 400), "calls": [c["name"] for c in reply.tool_calls], "tokens": reply.prompt_tokens + reply.completion_tokens, "cost_usd": reply.cost_usd})
 
-        messages.append({
-            "role": "assistant",
-            "content": reply.content or None,
-            "tool_calls": [{"id": c["id"], "type": "function", "function": {"name": c["name"], "arguments": json.dumps(c["arguments"])}} for c in reply.tool_calls] or None,
-        })
+        messages.append(assistant_message)
         if not reply.tool_calls:
             nudges += 1
             if nudges > 2:

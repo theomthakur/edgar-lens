@@ -6,6 +6,7 @@ from typing import Any
 
 import httpx
 
+from app.observability import observe
 from app.services.retrieval import HYBRID, hybrid_rank, retrieval_mode
 
 
@@ -132,7 +133,9 @@ def generate_report_with_llm(ticker: str, chunks: list[str], strategy: str) -> d
     if not api_key:
         raise RuntimeError("LLM_ENABLED is true but LLM_API_KEY is not set")
 
-    selected_chunks = _rank_chunks(chunks, strategy)
+    with observe("retrieve-excerpts", as_type="retriever", input={"strategy": strategy, "retrievalMode": retrieval_mode(), "chunks": len(chunks)}) as retrieval:
+        selected_chunks = _rank_chunks(chunks, strategy)
+        retrieval.update(output={"selected": len(selected_chunks), "chars": sum(len(c) for c in selected_chunks)})
     context = "\n\n---\n\n".join(selected_chunks)
 
     prompt = (
@@ -165,18 +168,27 @@ def generate_report_with_llm(ticker: str, chunks: list[str], strategy: str) -> d
         "Content-Type": "application/json",
     }
 
-    with httpx.Client(timeout=45.0) as client:
-        response = client.post(f"{_api_base_url()}/chat/completions", headers=headers, json=payload)
+    with observe(
+        "generate-report", as_type="generation", model=llm_model_name(), input=payload["messages"],
+        model_parameters={"temperature": payload["temperature"]},
+    ) as generation:
+        with httpx.Client(timeout=45.0) as client:
+            response = client.post(f"{_api_base_url()}/chat/completions", headers=headers, json=payload)
 
-    if response.status_code >= 400:
-        raise RuntimeError(f"LLM request failed with status {response.status_code}: {response.text[:200]}")
+        if response.status_code >= 400:
+            raise RuntimeError(f"LLM request failed with status {response.status_code}: {response.text[:200]}")
 
-    data = response.json()
-    text = (
-        data.get("choices", [{}])[0]
-        .get("message", {})
-        .get("content", "")
-    )
+        data = response.json()
+        text = (
+            data.get("choices", [{}])[0]
+            .get("message", {})
+            .get("content", "")
+        )
+        usage = data.get("usage") or {}
+        generation.update(
+            output={"role": "assistant", "content": text},
+            usage_details={k: v for k, v in {"input": usage.get("prompt_tokens"), "output": usage.get("completion_tokens")}.items() if v is not None} or None,
+        )
     if not isinstance(text, str) or not text.strip():
         raise RuntimeError("LLM returned empty content")
 

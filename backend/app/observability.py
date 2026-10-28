@@ -71,6 +71,29 @@ def observe(name: str, as_type: str = "span", **kwargs: Any) -> Iterator[Any]:
         manager.__exit__(None, None, None)
 
 
+@contextmanager
+def trace_attributes(**kwargs: Any) -> Iterator[None]:
+    """Set trace-level tags, name, metadata or session on everything opened inside (a no-op when tracing is off)."""
+    if client() is None:
+        yield
+        return
+    try:
+        from langfuse import propagate_attributes
+
+        manager = propagate_attributes(**kwargs)
+        manager.__enter__()
+    except Exception:  # noqa: BLE001
+        yield
+        return
+    try:
+        yield
+    except BaseException as error:
+        manager.__exit__(type(error), error, error.__traceback__)
+        raise
+    else:
+        manager.__exit__(None, None, None)
+
+
 def current_trace_id() -> str | None:
     lf = client()
     if lf is None:
