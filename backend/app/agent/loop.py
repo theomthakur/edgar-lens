@@ -6,6 +6,8 @@ import time
 from dataclasses import dataclass, field
 from typing import Callable
 
+from app.observability import current_trace_id, observe
+
 from .evidence import Evidence
 from .llm import ChatModel
 from .sec import SecClient
@@ -50,6 +52,7 @@ class RunResult:
     completion_tokens: int = 0
     cost_usd: float = 0.0
     seconds: float = 0.0
+    langfuse_trace_id: str | None = None
 
     def as_dict(self) -> dict:
         return self.__dict__.copy()
@@ -66,6 +69,28 @@ def run_agent(
     sec: SecClient,
     budget: Budget | None = None,
     on_event: Callable[[dict], None] | None = None,
+) -> RunResult:
+    """Run one question. With Langfuse configured, the whole run is one trace (see app/observability.py)."""
+    with observe("research-agent", as_type="agent", input={"question": question}, metadata={"model": model.name}) as run:
+        result = _run_agent(question, model, sec, budget, on_event)
+        run.update(output={
+            "status": result.status, "answer": _short(result.answer, 500),
+            "verified_claims": len(result.verified_claims), "failed_claims": len(result.failed_claims),
+        })
+        run.score_trace(name="status", value=result.status)
+        run.score_trace(name="verified_claims", value=len(result.verified_claims))
+        run.score_trace(name="failed_claims", value=len(result.failed_claims))
+        run.score_trace(name="cost_usd", value=result.cost_usd)
+        result.langfuse_trace_id = current_trace_id()
+    return result
+
+
+def _run_agent(
+    question: str,
+    model: ChatModel,
+    sec: SecClient,
+    budget: Budget | None,
+    on_event: Callable[[dict], None] | None,
 ) -> RunResult:
     budget = budget or Budget()
     evidence = Evidence()
@@ -94,7 +119,13 @@ def run_agent(
         if time.monotonic() - started > budget.max_seconds or result.cost_usd >= budget.max_cost_usd:
             return finish("stopped_budget")
         try:
-            reply = model.chat(messages, TOOL_SPECS)
+            with observe("model-call", as_type="generation", model=model.name, input={"messages": len(messages)}) as generation:
+                reply = model.chat(messages, TOOL_SPECS)
+                generation.update(
+                    output={"content": _short(reply.content, 400), "tool_calls": [c["name"] for c in reply.tool_calls]},
+                    usage_details={"input": reply.prompt_tokens, "output": reply.completion_tokens},
+                    cost_details={"total": reply.cost_usd},
+                )
         except Exception as error:  # a model or network failure should end the run cleanly, not crash it
             emit({"kind": "error", "message": _short(str(error), 300)})
             return finish("error")
@@ -125,7 +156,9 @@ def run_agent(
                 emit({"kind": "verify", "status": "too_early", "verified": 0, "failed": 0, "warnings": []})
                 continue
             if call["name"] == "final_answer":
-                outcome = _handle_final(call["arguments"], evidence, result, budget)
+                with observe("verify-answer", as_type="evaluator", input={"claims": len(call["arguments"].get("claims") or [])}) as verification:
+                    outcome = _handle_final(call["arguments"], evidence, result, budget)
+                    verification.update(output={"status": outcome["status"], "verified": len(result.verified_claims), "failed": len(result.failed_claims)})
                 emit({"kind": "verify", "status": outcome["status"], "verified": len(result.verified_claims), "failed": len(result.failed_claims), "warnings": result.warnings})
                 if outcome["done"]:
                     return finish(outcome["status"])
@@ -135,7 +168,9 @@ def run_agent(
             if result.tool_calls > budget.max_tool_calls:
                 return finish("stopped_budget")
             began = time.monotonic()
-            output = toolbox.call(call["name"], call["arguments"])
+            with observe(call["name"], as_type="tool", input=call["arguments"]) as tool_observation:
+                output = toolbox.call(call["name"], call["arguments"])
+                tool_observation.update(output=_short(output, 1000))
             emit({"kind": "tool", "name": call["name"], "args": call["arguments"], "result": _short(output), "seconds": round(time.monotonic() - began, 2)})
             messages.append({"role": "tool", "tool_call_id": call["id"], "content": _short(output, 7000)})
 

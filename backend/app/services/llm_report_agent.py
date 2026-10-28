@@ -6,6 +6,8 @@ from typing import Any
 
 import httpx
 
+from app.services.retrieval import HYBRID, hybrid_rank, retrieval_mode
+
 
 def llm_enabled() -> bool:
     return os.getenv("LLM_ENABLED", "false").strip().lower() in {"1", "true", "yes", "on"}
@@ -37,14 +39,17 @@ def _rank_chunks(chunks: list[str], strategy: str) -> list[str]:
     else:
         keywords = ["operating", "liquidity", "segment", "revenue", "risk", "cash flow"]
 
-    scored: list[tuple[int, str]] = []
-    for chunk in chunks:
-        lower = chunk.lower()
-        score = sum(lower.count(keyword) for keyword in keywords)
-        scored.append((score, chunk))
+    if retrieval_mode() == HYBRID:
+        top = hybrid_rank(chunks, " ".join(keywords), 8)
+    else:
+        scored: list[tuple[int, str]] = []
+        for chunk in chunks:
+            lower = chunk.lower()
+            score = sum(lower.count(keyword) for keyword in keywords)
+            scored.append((score, chunk))
 
-    scored.sort(key=lambda pair: pair[0], reverse=True)
-    top = [chunk for _, chunk in scored[:8]]
+        scored.sort(key=lambda pair: pair[0], reverse=True)
+        top = [chunk for _, chunk in scored[:8]]
 
     # Constrain prompt size.
     max_chars = _max_input_chars()

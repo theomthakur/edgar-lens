@@ -12,6 +12,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
+from app.observability import flush, score_trace
+
 from .config import model_from_env, sec_from_env
 from .loop import Budget, RunResult, run_agent
 from .sec import SecClient
@@ -111,6 +113,8 @@ def main() -> None:
     for i, task in enumerate(tasks, 1):
         result = run_agent(task.question, model, sec, Budget())
         row = score(task, result)
+        score_trace(result.langfuse_trace_id, "correct", 1.0 if row["correct"] else 0.0, comment=f"{task.id} ({task.kind})")
+        score_trace(result.langfuse_trace_id, "wrong_but_answered", 1.0 if row["wrong_but_answered"] else 0.0)
         rows.append(row)
         runs.append({"task": task.__dict__, "score": row, "result": result.as_dict()})
         print(f"{i:>2}/{len(tasks)} {task.id:<14} {row['status']:<22} {'OK ' if row['correct'] else 'BAD'} {row['model_calls']:>2} calls  {row['seconds']:>5}s  ${row['cost_usd']:.4f}", flush=True)
@@ -122,6 +126,7 @@ def main() -> None:
     path.write_text(json.dumps({"model": model.name, "summary": summary, "runs": runs}, indent=2, default=str), encoding="utf-8")
     print("\n" + json.dumps({"model": model.name, **summary}, indent=2))
     print(f"saved {path}")
+    flush()
 
 
 if __name__ == "__main__":

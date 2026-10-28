@@ -88,6 +88,34 @@ docker compose up --build
 
 For local Ollama, set `LLM_ENABLED=true`, use `http://localhost:11434/v1` as the base URL, and choose a locally installed model. No LLM configuration is required for the deterministic fallback.
 
+## Tracing with Langfuse (optional)
+
+Install the optional tooling with `pip install -r backend/requirements-ai-tooling.txt` and set `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY` and `LANGFUSE_HOST`. With no keys, tracing is off and the app behaves exactly as before. A tracing failure never breaks a request.
+
+What gets traced:
+
+- **Report loop:** one `report-analysis` trace per report. Each round is a child span containing the draft (an LLM generation or the deterministic builder) and a `citation-check` evaluator. Each round's citation precision is recorded as a score, and the trace records `final_citation_precision` and `rounds`. The retrieval mode is in the metadata, so lexical and hybrid runs can be filtered side by side.
+- **Research agent:** one `research-agent` trace per question. Every model call is a generation with token usage and cost, every tool call is a tool span, and the final answer check is an evaluator. The trace records `status`, `verified_claims`, `failed_claims` and `cost_usd`.
+- **Evaluation harness:** `python -m app.agent.evaluate` adds `correct` and `wrong_but_answered` scores to each task's trace, graded against the SEC's structured figures, so a run can be compared across models in Langfuse.
+
+## Hybrid retrieval with LangChain (optional)
+
+`RETRIEVAL_MODE=lexical` (the default) keeps the original keyword ranking. `RETRIEVAL_MODE=hybrid_langchain` fuses BM25 keyword search with embedding search using LangChain's `EnsembleRetriever`:
+
+- **BM25:** `langchain_community`'s `BM25Retriever`, with lowercase word tokens.
+- **Embeddings:** a local FastEmbed model (`BAAI/bge-small-en-v1.5`) in LangChain's `InMemoryVectorStore`. No API key is needed.
+- **Fusion:** reciprocal rank fusion. `RETRIEVAL_BM25_WEIGHT` sets the keyword share (default 0.5).
+
+The citation check doesn't change between modes, so both are graded by the same deterministic rule. If the optional packages are missing, the app falls back to lexical and reports `retrievalMode` in the response.
+
+Compare the two modes on real 10-K filings:
+
+```bash
+cd backend
+SEC_USER_AGENT="EDGARLens/1.0 (you@domain)" LLM_ENABLED=true \
+python -m scripts.compare_retrieval --tickers AAPL,MSFT,NVDA
+```
+
 ## API
 
 | Method | Endpoint | What it does |
@@ -122,6 +150,8 @@ cd frontend && npm audit --omit=dev
 The backend test suite covers ingestion helpers, report generation, citation checks, and the bounded agent loop. The frontend build performs the production TypeScript and route checks.
 
 ## Current boundaries
+
+- `langchain-community`, which provides the BM25 retriever and FastEmbed wrapper, is being sunset upstream. The hybrid mode pins working versions; a future version should move to standalone integration packages.
 
 - The app analyzes the latest filing rather than a full filing history.
 - Citation support uses deterministic token-overlap scoring. It is a release signal, not a substitute for analyst review.
