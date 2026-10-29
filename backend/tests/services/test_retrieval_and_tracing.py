@@ -40,6 +40,8 @@ def test_lexical_is_the_default_and_unchanged():
 
 
 def test_hybrid_uses_langchain_and_still_cites_real_text(monkeypatch):
+    if not retrieval.hybrid_available():
+        pytest.skip("optional LangChain packages are not installed (requirements-ai-tooling.txt)")
     monkeypatch.setenv("RETRIEVAL_MODE", "hybrid_langchain")
     assert retrieval.retrieval_mode() == retrieval.HYBRID
     # With the keyword side weighted fully, BM25 (lowercased tokens) finds the cash-flow chunk.
