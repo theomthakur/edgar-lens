@@ -71,6 +71,10 @@ function resolveApiBaseUrl(): string {
 
 const API_BASE = resolveApiBaseUrl();
 
+export function getReportPdfUrl(reportId: string) {
+  return `${API_BASE}/api/reports/${encodeURIComponent(reportId)}/pdf`;
+}
+
 async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     ...init,

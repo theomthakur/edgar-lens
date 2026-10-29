@@ -1,0 +1,8 @@
+# Optional: Langfuse tracing and LangChain hybrid retrieval. The base app runs without these.
+# pip install -r requirements.txt -r requirements-ai-tooling.txt
+langfuse==5.0.4
+langchain-core==1.7.0
+langchain-community==0.4.2
+langchain-classic==1.0.8
+rank-bm25==0.2.2
+fastembed==0.9.1

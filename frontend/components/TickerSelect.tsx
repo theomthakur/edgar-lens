@@ -79,19 +79,19 @@ export default function TickerSelect({ value, onChange, label = "Ticker" }: Prop
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-slate-700">{label}</label>
+      <label className="block text-sm font-bold text-[#17243a]">{label}</label>
       <select className="field" value={selectValue} onChange={handleSelect}>
         {sectors.map((sector) => (
           <optgroup key={sector} label={sector}>
             {POPULAR_TICKERS.filter((t) => t.sector === sector).map((t) => (
               <option key={t.ticker} value={t.ticker}>
-                {t.ticker} — {t.name}
+              {t.ticker} · {t.name}
               </option>
             ))}
           </optgroup>
         ))}
         <optgroup label="Other">
-          <option value={CUSTOM_VALUE}>Enter custom ticker…</option>
+          <option value={CUSTOM_VALUE}>Enter custom ticker</option>
         </optgroup>
       </select>
 

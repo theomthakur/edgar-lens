@@ -3,56 +3,172 @@
 @tailwind utilities;
 
 :root {
-  --bg: #eef4f8;
-  --panel: #ffffff;
-  --ink: #0f172a;
-  --muted: #526070;
-  --accent: #0ea5e9;
+  --paper: #f7f3eb;
+  --surface: #fffdfa;
+  --ink: #17243a;
+  --muted: #657080;
+  --line: #d6d0c4;
+  --navy: #17243a;
+  --blue: #355f9e;
+  --gold: #c79d43;
+  --red: #a64b3c;
 }
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 
 body {
+  min-height: 100vh;
+  overflow-x: hidden;
   color: var(--ink);
   background:
-    radial-gradient(circle at 15% 10%, #d8efff 0%, transparent 40%),
-    radial-gradient(circle at 85% 90%, #e7ffd8 0%, transparent 35%),
-    var(--bg);
-  min-height: 100vh;
+    radial-gradient(circle at 1px 1px, rgb(23 36 58 / 0.075) 1px, transparent 0) 0 0 / 18px 18px,
+    var(--paper);
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.brand-badge {
-  display: inline-flex;
-  height: 2rem;
-  width: 2rem;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.65rem;
-  color: #0f172a;
-  font-weight: 700;
-  background: linear-gradient(135deg, #7dd3fc 0%, #fde68a 100%);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.5);
+::selection { color: white; background: var(--blue); }
+
+.display {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: -0.045em;
+}
+
+.brand-mark {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  filter: drop-shadow(0 2px 2px rgb(23 36 58 / 0.13));
 }
 
 .nav-link {
-  border-radius: 0.5rem;
-  padding: 0.45rem 0.7rem;
-  color: #334155;
+  padding: 0.5rem 0;
+  color: var(--muted);
+  transition: color 150ms ease;
 }
 
-.nav-link:hover {
-  background: #e2e8f0;
+.nav-link:hover { color: var(--ink); }
+
+.card, .archive-panel {
+  border: 1px solid var(--line);
+  background: rgb(255 253 250 / 0.94);
+  box-shadow: 8px 8px 0 rgb(23 36 58 / 0.045);
 }
 
-.card {
-  @apply rounded-xl shadow-sm border;
-  background: rgb(255 255 255 / 0.9);
-  border-color: #e2e8f0;
+.archive-panel { border-top: 3px solid var(--navy); }
+.ledger-card { border-left: 3px solid var(--red); }
+.signal-tag {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgb(53 95 158 / 0.42);
+  background: rgb(53 95 158 / 0.08);
+  padding: 0.35rem 0.55rem;
+  color: var(--blue);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.margin-note {
+  color: var(--red);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.93rem;
+  font-style: italic;
 }
 
 .field {
-  @apply w-full rounded-md border px-3 py-2 text-sm;
-  border-color: #cbd5e1;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: var(--surface);
+  padding: 0.85rem 0.95rem;
+  color: var(--ink);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.field:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgb(53 95 158 / 0.13);
 }
 
 .btn-primary {
-  @apply rounded-md bg-sky-500 px-4 py-2 text-white hover:bg-sky-600 disabled:opacity-60;
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  border: 1px solid var(--navy);
+  background: var(--navy);
+  padding: 0.75rem 1.15rem;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: transform 150ms ease, background 150ms ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--blue);
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled { cursor: not-allowed; opacity: 0.55; }
+
+.btn-secondary {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ink);
+  background: transparent;
+  padding: 0.75rem 1.15rem;
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: background 150ms ease;
+}
+
+.btn-secondary:hover { background: var(--surface); }
+
+.eyebrow {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.rule { border-color: var(--line); }
+
+.metric-number {
+  font-family: Georgia, "Times New Roman", serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.status-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.status-dot.active {
+  background: var(--gold);
+  box-shadow: 0 0 0 4px rgb(199 157 67 / 0.17);
+}
+
+.status-dot.complete { background: var(--blue); }
+
+@media (max-width: 640px) {
+  body { background-size: 100% 28px; }
+
+  .mobile-hero-title {
+    font-size: clamp(2.7rem, 13vw, 3.35rem);
+    letter-spacing: -0.055em;
+  }
+
+  .mobile-action {
+    width: 100%;
+  }
 }

@@ -49,8 +49,8 @@ NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000 npm run dev
 
 Open [localhost:3000](http://localhost:3000).
 
-## Additional work
+## Optional tools
 
-The [agent-core branch](https://github.com/theomthakur/edgar-lens/tree/agent-core) contains the newer research agent, optional Langfuse tracing, and LangChain hybrid retrieval.
+This branch also includes a research agent, Langfuse tracing, and LangChain hybrid retrieval. These integrations are optional; keyword retrieval remains the default.
 
-See the [technical guide](docs/technical-guide.md) for this branch's detailed setup and API reference.
+See the [technical guide](docs/technical-guide.md) for configuration, evaluation results, and API details.
