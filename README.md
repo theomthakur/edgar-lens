@@ -1,33 +1,60 @@
 # EDGAR Lens
 
-EDGAR Lens turns public SEC filings into short research briefs with links to the supporting evidence.
+EDGAR Lens reads a public SEC filing, produces a short research brief, and shows the filing excerpts behind its claims.
 
-**[Try the live demo](https://edgar-lens.vercel.app)**
+**Live demo:** [edgar-lens.vercel.app](https://edgar-lens.vercel.app) · **Source:** [GitHub](https://github.com/theomthakur/edgar-lens)
+
+## Why it exists
+
+Company filings are long, and an AI-generated summary can sound convincing even when its evidence is weak. EDGAR Lens keeps the source material beside the answer and measures whether each citation actually supports the text it accompanies.
 
 ## What it does
 
-- Fetches a company's latest SEC filing.
-- Drafts a brief from relevant filing excerpts.
-- Checks citation support and broadens retrieval when evidence is weak.
-- Shows the report alongside its sources and citation scores.
+1. Fetches a company's latest filing from SEC EDGAR.
+2. Retrieves excerpts relevant to the research question.
+3. Drafts a brief from those excerpts.
+4. Checks citation support after each draft.
+5. Broadens retrieval and tries once more when the evidence is weak.
+6. Keeps the better-supported result and makes the evidence inspectable.
 
-## How it works
+The research loop is bounded to two rounds. If model drafting is disabled or unavailable, the same workflow uses a deterministic report builder and clearly identifies that mode.
 
-A Next.js and TypeScript frontend connects to a FastAPI backend. The backend fetches filings from SEC EDGAR, retrieves excerpts, drafts a report, and checks its citations. SQLAlchemy stores the data in PostgreSQL or a local SQLite database.
+```text
+SEC filing -> retrieve evidence -> draft -> check citations
+                                            |
+                              strong enough -> finish
+                                    weak -> broaden once -> redraft
+```
 
-An OpenAI-compatible model can draft the report. If that is disabled or unavailable, the app uses a deterministic report builder and identifies the generation mode. Citation checks measure text overlap; they do not establish that every claim is correct.
+## Technology
+
+- **Interface:** Next.js, React, and TypeScript
+- **API:** FastAPI and Python
+- **Storage:** PostgreSQL in deployment or SQLite locally
+- **Data source:** public SEC EDGAR filings
+- **Model:** any OpenAI-compatible endpoint, with a deterministic fallback
+- **Observability:** optional Langfuse traces with model usage, cost, retrieval steps, and citation scores
+
+Keyword retrieval remains the default because it performed better in the recorded comparison. An optional LangChain mode combines BM25 with local embeddings through reciprocal-rank fusion. Both modes use the same citation check.
+
+## Verification
+
+- The backend suite covers the agent loop, evaluation, retrieval, tracing, and optional-tooling behavior.
+- The optional LangChain test skips cleanly when its extra packages are not installed; with them installed, the full suite contains 39 passing tests.
+- A fixed comparison on eight real 10-K filings produced first-round citation precision of **0.875 for keyword retrieval** and **0.749 for hybrid retrieval**. Keyword retrieval was also about three times faster, so it remains the default.
+- Langfuse integration was checked with real traces containing retrieval spans, model calls, token usage, estimated cost, and citation scores.
+
+These numbers describe the recorded test set, not every filing or research question.
 
 ## Run locally
 
-You need Python 3.11+ and Node.js 20.9+.
-
-From the project root:
+Use Python 3.11 or newer and Node.js 20.9 or newer.
 
 ```bash
 cp .env.example .env
 ```
 
-Set `SEC_USER_AGENT` in `.env` to an application name and your real contact email. Set `LLM_ENABLED=false` to try the deterministic report flow, or configure `LLM_API_BASE_URL`, `LLM_MODEL`, and `LLM_API_KEY` for model drafting.
+Set `SEC_USER_AGENT` to an application name and a real contact email. To run without a model provider, set `LLM_ENABLED=false`. To enable model drafting, configure `LLM_API_BASE_URL`, `LLM_MODEL`, and `LLM_API_KEY`.
 
 Start the backend:
 
@@ -39,7 +66,7 @@ pip install -r requirements.txt
 DATABASE_URL=sqlite:///./finance_agent.db uvicorn app.main:app --reload
 ```
 
-In a second terminal:
+Start the frontend in another terminal:
 
 ```bash
 cd frontend
@@ -47,10 +74,19 @@ npm ci
 NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000 npm run dev
 ```
 
-Open [localhost:3000](http://localhost:3000).
+Open [localhost:3000](http://localhost:3000). Docker Compose is also available:
 
-## Optional tools
+```bash
+docker compose up --build
+```
 
-This branch also includes a research agent, Langfuse tracing, and LangChain hybrid retrieval. These integrations are optional; keyword retrieval remains the default.
+## Limits
 
-See the [technical guide](docs/technical-guide.md) for configuration, evaluation results, and API details.
+- Citation scoring measures textual support. It does not prove that a financial interpretation is correct.
+- Hybrid retrieval is optional and requires additional local packages.
+- The application is a research aid, not investment advice, and it does not trade or place orders.
+- The live demo depends on the availability and rate limits of SEC EDGAR and the configured model provider.
+
+See the [technical guide](docs/technical-guide.md) for configuration, evaluation details, tracing, retrieval modes, and API documentation.
+
+Built by [Om Thakur](https://theomthakur.github.io/portfolio) · [LinkedIn](https://www.linkedin.com/in/theomthakur/)
